@@ -1,0 +1,12 @@
+curl -i http://localhost:8080/api/status
+curl -i -X POST http://localhost:8080/api/utenti -d '{"matricola":"ciao"}' -H "Content-Type:application/json"
+curl -i -X POST http://localhost:8080/api/utenti/123456/aggiorna -d '{"matricola":"ciao"}' -H "Content-Type:application/json"
+curl -i -X POST http://localhost:8080/api/utenti/123456/elimina -d '{"matricola":"ciao"}' -H "Content-Type:application/json"
+curl -i -X POST http://localhost:8080/api/utenti/123456/ruoli -d '{"idRuoliApplicativi":["1","2"], "ndg":"ciao"}' -H "Content-Type:application/json"
+curl -i -X POST http://localhost:8080/api/utenti/123456/ruoli/elimina -d '{"ndg":"ciao"}' -H "Content-Type:application/json"
+curl -i -X POST http://localhost:8080/api/utenti/123456/ruoli/eliminatutti -d '{"ndg":"ciao"}' -H "Content-Type:application/json"
+
+curl -i -X POST http://localhost:8080/api/utenti/FAKEUSER/aggiorna -d '{"nome":"Maurizio","cognome":"Pinzi","codiceIstituto":"MF"}' -H "Content-Type:application/json"
+
+
+mvn install:install-file -Dfile={C:\Users\pinzi.CORPDOM\myproject\ppmrest\ojdbc7.jar} -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0 -Dpackaging=jar
