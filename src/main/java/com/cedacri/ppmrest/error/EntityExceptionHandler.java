@@ -2,6 +2,7 @@ package com.cedacri.ppmrest.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,4 +18,13 @@ public class EntityExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDetail error = new ErrorDetail(ex);
         return new ResponseEntity<>(error, ex.getHttpStatus());
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public final ResponseEntity<ErrorDetail> handleUserNotFoundException(IllegalArgumentException ex, WebRequest request) {
+        ErroreGenericoException ex2 = new ErroreGenericoException();
+        ErrorDetail error = new ErrorDetail(ex2);
+        return new ResponseEntity<>(error, ex2.getHttpStatus());
+    }
+
+
 }

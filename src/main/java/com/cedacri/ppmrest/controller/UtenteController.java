@@ -24,28 +24,26 @@ public class UtenteController {
 
         ProcedureResult result = procedureRepositoryUtente.addUserProcedure(utente);
 
-
-        boolean alreadyPresent = true;
-        CreaUtenteResponse r = new CreaUtenteResponse();
-        if(alreadyPresent) {
-            r.getDatiAggiuntivi().setAlreadyPresent(true);
+        CreaUtenteResponse response = new CreaUtenteResponse();
+        if(result.checkKoOrAlreadyPresent()) {
+            response.getDatiAggiuntivi().setAlreadyPresent(true);
+        } else {
+            response.setUtenzaApplicativaInterna(result.getIdApplicativo());
         }
-        return r;
+        return response;
     }
 
     @PostMapping(value = "/utenti/{matricola}/aggiorna")
     public CreaUtenteResponse updateUser(@PathVariable String matricola, @RequestBody Utente utente) {
         System.out.println(utente.toString());
-
         utente.setMatricola(matricola);
         utente.mandatoryFieldCheckUpdate();
 
-        if(matricola.equals("FAKEUSER")) {
-            throw new MatricolaNonTrovataException();
-        }
+        ProcedureResult result = procedureRepositoryUtente.updateUserProcedure(utente);
+        result.checkKo();
 
-        CreaUtenteResponse r = new CreaUtenteResponse();
-        return r;
+        CreaUtenteResponse response = new CreaUtenteResponse();
+        return response;
     }
 
     @PostMapping(value = "/utenti/{matricola}/elimina")
@@ -55,12 +53,11 @@ public class UtenteController {
         utente.setMatricola(matricola);
         utente.setDatiAggiuntivi(datiAggiuntivi);
 
-        if(utente.getMatricola().equals("FAKEUSER")) {
-            throw new MatricolaNonTrovataException();
-        }
-        GenericResponse r = new GenericResponse();
-        r.getDatiAggiuntivi().setDatoAggiuntivo1("Test");
-        return r;
+        ProcedureResult result = procedureRepositoryUtente.deleteUserProcedure(utente);
+        result.checkKo();
+
+        GenericResponse response = new GenericResponse();
+        return response;
     }
 
 }

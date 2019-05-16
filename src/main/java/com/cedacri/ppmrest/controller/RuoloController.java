@@ -4,6 +4,7 @@ import com.cedacri.ppmrest.error.MatricolaNonTrovataException;
 import com.cedacri.ppmrest.error.RuoloNonTrovatoException;
 import com.cedacri.ppmrest.model.*;
 import com.cedacri.ppmrest.repository.ProcedureRepositoryRuolo;
+import com.cedacri.ppmrest.repository.ProcedureResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,59 +19,39 @@ public class RuoloController {
 
     @PostMapping(value = "/utenti/{matricola}/ruoli")
     public GenericResponse assignRoles(@PathVariable String matricola, @RequestBody Ruolo ruolo) {
-        System.out.println(ruolo.toString());
 
         ruolo.mandatoryFieldCheck();
 
-        if(matricola.equals("FAKEUSER")) {
-            throw new MatricolaNonTrovataException();
-        }
-        if(ruolo.getIdRuoliApplicativi().contains("FAKEROLE")) {
-            throw new RuoloNonTrovatoException();
-        }
+        ProcedureResult result = procedureRepositoryRuolo.addRoleProcedure(matricola,ruolo);
 
-
-
-        GenericResponse r = new GenericResponse();
-        r.getDatiAggiuntivi().setDatoAggiuntivo1("Test");
-        if(ruolo.getIdRuoliApplicativi().contains("2")) {
-            r.getDatiAggiuntivi().setAlreadyPresent(true);
+        GenericResponse response = new GenericResponse();
+        if(result.checkKoOrAlreadyPresent()) {
+            response.getDatiAggiuntivi().setAlreadyPresent(true);
         }
-        return r;
+        return response;
     }
 
     @PostMapping(value = "/utenti/{matricola}/ruoli/elimina")
     public GenericResponse removesRoles(@PathVariable String matricola, @RequestBody Ruolo ruolo) {
-        System.out.println(ruolo.toString());
 
         ruolo.mandatoryFieldCheck();
+        ProcedureResult result = procedureRepositoryRuolo.deleteRoleProcedure(matricola,ruolo);
 
-        if(matricola.equals("FAKEUSER")) {
-            throw new MatricolaNonTrovataException();
+        GenericResponse response = new GenericResponse();
+        if(result.checkKoOrNotExistent()) {
+            response.getDatiAggiuntivi().setNotExistent(true);
         }
-        if(ruolo.getIdRuoliApplicativi().contains("FAKEROLE")) {
-            throw new RuoloNonTrovatoException();
-        }
-
-        GenericResponse r = new GenericResponse();
-        r.getDatiAggiuntivi().setDatoAggiuntivo1("Test");
-        if(ruolo.getIdRuoliApplicativi().contains("2")) {
-            r.getDatiAggiuntivi().setNotExistent(true);
-        }
-        return r;
+        return response;
     }
 
     @PostMapping(value = "/utenti/{matricola}/ruoli/eliminatutti")
     public GenericResponse deleteRoles(@PathVariable String matricola, @RequestBody Ruolo ruolo) {
-        System.out.println(matricola);
-        System.out.println(ruolo.toString());
 
-        if(matricola.equals("FAKEUSER")) {
-            throw new MatricolaNonTrovataException();
-        }
-        GenericResponse r = new GenericResponse();
-        r.getDatiAggiuntivi().setDatoAggiuntivo1("Test");
-        return r;
+        ProcedureResult result = procedureRepositoryRuolo.deleteAllRolesProcedure(matricola,ruolo);
+        result.checkKo();
+
+        GenericResponse response = new GenericResponse();
+        return response;
     }
 
 

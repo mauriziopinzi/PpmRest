@@ -8,7 +8,7 @@ public class ErrorDetail {
     @Getter private Integer codice;
     @Getter private String descrizione;
 
-    ErrorDetail(CedacriException ex) {
+    public ErrorDetail(CedacriException ex) {
         codice = ex.getCode();
         descrizione = ex.getMessage();
     }
